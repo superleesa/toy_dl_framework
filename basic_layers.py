@@ -1,17 +1,33 @@
 import numpy as np
 from typing import Union, Optional
+from abc import ABC, abstractmethod
+
+class Layer(ABC):
+
+    @abstractmethod
+    def forward(self, X: np.ndarray) -> np.ndarray:
+        ...
+
+    @abstractmethod
+    def backward(self, dX: np.ndarray) -> np.ndarray:
+        """
+
+        :param dX: the derivative flowed from the parent layer
+        :return:
+        """
+        ...
 
 
-class SoftmaxAndCrossEntropy:
+class SoftmaxAndCrossEntropy(Layer):
     def __init__(self) -> None:
         self.Y = None
         self.predicted_Y = None
         self.mean_entropy = None  # mean loss
 
-    def set_correct_labels(self, Y: np.array) -> None:
+    def set_correct_labels(self, Y: np.ndarray) -> None:
         self.Y = Y
 
-    def forward(self, X: np.array) -> np.array:
+    def forward(self, X: np.ndarray) -> np.ndarray:
         """
             X: output from ReLU. should have size of (batch_size, output_size)
             Y: one-hot encoded labels. should have size of (batch_size, output_size)
@@ -38,9 +54,9 @@ class SoftmaxAndCrossEntropy:
         # print(self.mean_entropy)
         return self.mean_entropy
 
-    def backward(self, dinpt: np.array = 1) -> np.array:
+    def backward(self, dinpt: np.ndarray = 1) -> np.array:
         batch_size = self.Y.shape[0]
-        if self.predicted_Y.size == self.Y.size:  # 教師データがone-hot-vectorの場合
+        if self.predicted_Y.size == self.Y.size:
             dLdW = (self.predicted_Y - self.Y) / batch_size
         else:
             dLdW = self.predicted_Y.copy()
@@ -50,11 +66,11 @@ class SoftmaxAndCrossEntropy:
         return dLdW
 
 
-class ReLU:
+class ReLU(Layer):
     def __init__(self) -> None:
         self.is_zero = None
 
-    def forward(self, X: np.array) -> None:
+    def forward(self, X: np.ndarray) -> None:
         """
             X: should have size of batch_size*hidden_layer
         """
@@ -63,7 +79,7 @@ class ReLU:
         out[self.is_zero] = 0
         return out
 
-    def backward(self, d_inpt: np.array) -> np.array:
+    def backward(self, d_inpt: np.ndarray) -> np.ndarray:
         """
             derivative_inpt: should have size of batch_size*hidden_layer (same shape as X)
         """
@@ -71,7 +87,7 @@ class ReLU:
         return d_inpt
 
 
-class Affine:
+class Dense(Layer):
     def __init__(self):
         self.X = None
         self.W = None
@@ -79,14 +95,14 @@ class Affine:
         self.dLdW = None
         self.dLdB = None
 
-    def set_params(self, W: np.array, B: np.array):
+    def set_params(self, W: np.ndarray, B: np.ndarray):
         self.W = W
         self.B = B
 
     def get_updated_params(self):
         return self.dLdW, self.dLdB
 
-    def forward(self, X: np.array) -> np.array:
+    def forward(self, X: np.ndarray) -> np.ndarray:
         """
             X: should have size of (batch_size, input_size) or (batch_size, hidden_size)
             W: should have size of (input_size, hidden_size) or (hidden_size, output_size)
@@ -99,7 +115,7 @@ class Affine:
 
         return X2
 
-    def backward(self, d_inpt: np.array) -> np.array:
+    def backward(self, d_inpt: np.ndarray) -> np.ndarray:
         # returns derivatives for inputs, weights and biases
         # if this affine layer is the first one, then the derivatives for inputs should be discarded
 

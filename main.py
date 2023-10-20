@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Union, Optional
-from layers import Affine, ReLU, SoftmaxAndCrossEntropy
+from basic_layers import Dense, ReLU, SoftmaxAndCrossEntropy
 from preprocessing import get_normalized_data
 
 # one optimization is to flatten all the parameters (don't separate them)
@@ -18,9 +18,9 @@ class TwoLayerNeuralNetwork:
         self.min_iters = 1000
 
         # initialize layers (instantiate Affine and SoftmaxAndCrossEntropy)
-        affine1 = Affine()  # 0
+        affine1 = Dense()  # 0
         relu1 = ReLU()  # 1
-        affine2 = Affine()  # 2
+        affine2 = Dense()  # 2
         softmax_and_loss = SoftmaxAndCrossEntropy()  # 3
 
         self.layers = [affine1, relu1, affine2, softmax_and_loss]
