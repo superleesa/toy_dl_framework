@@ -9,11 +9,25 @@ class Loss(ABC):
     def forward(self, X: np.ndarray, Y: np.ndarray) -> np.ndarray:
         ...
 
+    @abstractmethod
     def backward(self) -> np.ndarray:
         ...
 
+class CrossEntropy(Loss):
+
+    def forward(self, X: np.ndarray, Y: np.ndarray) -> np.ndarray:
+        # todo
+        pass
+
+    def backward(self) -> np.ndarray:
+        # todo
+        pass
+
+
+# todo implement normal cross entropy too
 
 class SoftmaxThenCrossEntropy(Loss):
+    """sparse categorical cross entropy (Y can be one hot encoded or an array of labels)"""
     def __init__(self) -> None:
         self.Y = None
         self.predicted_Y = None
@@ -21,8 +35,8 @@ class SoftmaxThenCrossEntropy(Loss):
 
     def forward(self, X: np.ndarray, Y: np.ndarray) -> np.ndarray:
         """
-            X: output from ReLU. should have size of (batch_size, output_size)
-            Y: one-hot encoded labels. should have size of (batch_size, output_size)
+            X: should have size of (batch_size, output_size)
+            Y: an array of labels, or a sparse one-hot encoded labels
 
             Note: y doesn't need to be one-hot encoded
         """
@@ -44,16 +58,19 @@ class SoftmaxThenCrossEntropy(Loss):
         batch_size = self.Y.shape[0]
         delta = 1e-7
         self.mean_entropy = -np.sum(np.log(self.predicted_Y[np.arange(batch_size), self.Y] + delta)) / batch_size
-        # print(self.mean_entropy)
         return self.mean_entropy
 
     def backward(self) -> np.array:
         batch_size = self.Y.shape[0]
-        if self.predicted_Y.size == self.Y.size:
-            dLdW = (self.predicted_Y - self.Y) / batch_size
-        else:
-            dLdW = self.predicted_Y.copy()
-            dLdW[np.arange(batch_size), self.Y] -= 1
-            dLdW = dLdW / batch_size
 
-        return dLdW
+        # if Y is one hot encoded
+        if self.predicted_Y.size == self.Y.size:
+            dX = (self.predicted_Y - self.Y) / batch_size
+
+        # if Y is an array of labels
+        else:
+            dX = self.predicted_Y.copy()
+            dX[np.arange(batch_size), self.Y] -= 1
+            dX = dX / batch_size
+
+        return dX
