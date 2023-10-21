@@ -8,7 +8,6 @@ class Initializer(ABC):
     def initialize_array(self, shape: list) -> np.ndarray:
         ...
 
-
 class RandomInitializer(Initializer):
     def initialize_array(self, shape: list) -> np.ndarray:
         return np.random.random(shape)

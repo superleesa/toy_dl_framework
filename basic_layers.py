@@ -7,6 +7,9 @@ from initializer import Initializer
 
 class Layer(ABC):
 
+    def __init__(self, initializer: Initializer = None):
+        self.initializer = initializer
+
     @abstractmethod
     def forward(self, X: np.ndarray) -> np.ndarray:
         ...
@@ -20,21 +23,21 @@ class Layer(ABC):
         """
         ...
 
-    @abstractmethod
     def initialize_params(self, initializer: Initializer):
-        ...
+        """layers without parameters does nothing"""
+        return
 
-    @abstractmethod
     def get_params(self) -> list:
-        ...
+        return []
 
-    @abstractmethod
     def get_param_gradients(self) -> list:
-        ...
+        return []
 
 
 class ReLU(Layer):
-    def __init__(self) -> None:
+
+    def __init__(self, initializer: Initializer = None) -> None:
+        super().__init__(initializer)
         self.is_zero = None
 
     def forward(self, X: np.ndarray) -> None:
@@ -56,7 +59,8 @@ class ReLU(Layer):
 
 class Linear(Layer):
 
-    def __init__(self, in_features, out_features):
+    def __init__(self, in_features, out_features, initializer: Initializer = None):
+        super().__init__(initializer)
         self.in_features = in_features
         self.out_features = out_features
 
@@ -71,14 +75,9 @@ class Linear(Layer):
         self.dLdW = None
         self.dLdB = None
 
-    # def set_params(self, W: np.ndarray, b: np.ndarray):
-    #     self.W = W
-    #     self.b = b
-
-    # def get_updated_params(self):
-    #     return self.dLdW, self.dLdB
-
     def initialize_params(self, initializer):
+        if self.initializer is not None:
+            initializer = self.initializer
         self.W = initializer.initialize_array([self.in_features, self.out_features])
         self.b = initializer.initialize_array([self.out_features])
 
@@ -110,3 +109,4 @@ class Linear(Layer):
         self.dLdB = np.sum(d_inpt, axis=0)
 
         return dLdX
+

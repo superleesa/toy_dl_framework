@@ -13,7 +13,7 @@ class Loss(ABC):
         ...
 
 
-class SoftmaxAndCrossEntropy(Loss):
+class SoftmaxThenCrossEntropy(Loss):
     def __init__(self) -> None:
         self.Y = None
         self.predicted_Y = None

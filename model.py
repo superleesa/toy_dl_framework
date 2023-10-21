@@ -20,7 +20,7 @@ class Model(ABC):
 
         # todo: support multiple initialization methods
 
-    def fit(self, X, Y, epochs: int, initializer: Initializer, optimizer: Optimizer, loss_func: Loss, mini_batch_size: int = 64, num_iterations: int = 1000) -> None:
+    def fit(self, X, Y, loss_func: Loss, optimizer: Optimizer,  epochs: int = 3, initializer: Initializer = None, mini_batch_size: int = 64, num_iterations: int = 100) -> None:
         # iterate through epoch
 
 
@@ -48,9 +48,9 @@ class Model(ABC):
                 Y_batch = Y[selected_indices]
     
     
-                self._forward(X_batch, Y_batch)
-                self._backward()
-                self.optimizer.step()
+                self.forward(X_batch, Y_batch)
+                gradients = self.backward()
+                self.optimizer.step(gradients)
 
     def predict(self, X_test):
         ...
@@ -62,7 +62,7 @@ class Model(ABC):
         for layer in self.layers:
             layer.initialize_params(self.initializer)
 
-    def _forward(self, X, y) -> np.ndarray:
+    def forward(self, X, y) -> np.ndarray:
         """returns loss"""
 
         for layer in self.layers:
@@ -70,19 +70,22 @@ class Model(ABC):
 
 
         # calculate loss at the end using the output from the last layer and y
-        loss = self.loss_func(X, y)
+        loss = self.loss_func.forward(X, y)
         return loss
 
-    def _backward(self) -> np.ndaray:
+    def backward(self) -> np.ndaray:
         """for each layer call backward method"""
+        all_gradients = []
 
         # loss backward
         dX = self.loss_func.backward()
+        all_gradients.append(dX)
 
         for idx in range(len(self.layers)-1, -1, -1):
             dX = self.layers[idx].backward(dX)
+            all_gradients.append(dX)
 
-        return dX
+        return all_gradients
 
     def get_trainable_params(self):
         all_params = []
@@ -92,13 +95,13 @@ class Model(ABC):
 
         return all_params
 
-    def get_gradients(self):
-        all_gradients = []
-        for layer in self.layers:
-            grad = layer.get_param_gradients()
-            all_gradients.append(grad)
-
-        return all_gradients
+    # def get_gradients(self):
+    #     all_gradients = []
+    #     for layer in self.layers:
+    #         grad = layer.get_param_gradients()
+    #         all_gradients.append(grad)
+    #
+    #     return all_gradients
 
     def _get_mini_batch_indices(self, data_size: int) -> np.array:
         return np.random.choice(data_size, self.mini_batch_size)
