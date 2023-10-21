@@ -2,6 +2,9 @@ import numpy as np
 from typing import Union, Optional
 from abc import ABC, abstractmethod
 
+from initializer import Initializer
+
+
 class Layer(ABC):
 
     @abstractmethod
@@ -17,53 +20,17 @@ class Layer(ABC):
         """
         ...
 
+    @abstractmethod
+    def initialize_params(self, initializer: Initializer):
+        ...
 
-class SoftmaxAndCrossEntropy(Layer):
-    def __init__(self) -> None:
-        self.Y = None
-        self.predicted_Y = None
-        self.mean_entropy = None  # mean loss
+    @abstractmethod
+    def get_params(self) -> list:
+        ...
 
-    def set_correct_labels(self, Y: np.ndarray) -> None:
-        self.Y = Y
-
-    def forward(self, X: np.ndarray) -> np.ndarray:
-        """
-            X: output from ReLU. should have size of (batch_size, output_size)
-            Y: one-hot encoded labels. should have size of (batch_size, output_size)
-
-            Note: y doesn't need to be one-hot encoded
-        """
-
-        # softmax
-        X = X - np.max(X, axis=-1, keepdims=True)  # adding a constant to avoid overflow
-        self.predicted_Y = np.exp(X) / np.sum(np.exp(X), axis=-1, keepdims=True)
-
-        # cross entropy (= lack of order => smaller the better)
-        if self.predicted_Y.ndim == 1:
-            self.predicted_Y = self.predicted_Y.reshape(1, self.predicted_Y.size)
-            self.Y = self.Y.reshape(1, self.Y.size)
-
-        # check if Y is one-hot vector or not
-        if self.Y.shape == self.predicted_Y.shape:
-            self.Y = np.argmax(self.Y, axis=1)
-
-        batch_size = self.Y.shape[0]
-        delta = 1e-7
-        self.mean_entropy = -np.sum(np.log(self.predicted_Y[np.arange(batch_size), self.Y] + delta)) / batch_size
-        # print(self.mean_entropy)
-        return self.mean_entropy
-
-    def backward(self, dinpt: np.ndarray = 1) -> np.array:
-        batch_size = self.Y.shape[0]
-        if self.predicted_Y.size == self.Y.size:
-            dLdW = (self.predicted_Y - self.Y) / batch_size
-        else:
-            dLdW = self.predicted_Y.copy()
-            dLdW[np.arange(batch_size), self.Y] -= 1
-            dLdW = dLdW / batch_size
-
-        return dLdW
+    @abstractmethod
+    def get_param_gradients(self) -> list:
+        ...
 
 
 class ReLU(Layer):
@@ -87,20 +54,39 @@ class ReLU(Layer):
         return d_inpt
 
 
-class Dense(Layer):
-    def __init__(self):
+class Linear(Layer):
+
+    def __init__(self, in_features, out_features):
+        self.in_features = in_features
+        self.out_features = out_features
+
+        # input
         self.X = None
+
+        # params
         self.W = None
-        self.B = None
+        self.b = None
+
+        # weights
         self.dLdW = None
         self.dLdB = None
 
-    def set_params(self, W: np.ndarray, B: np.ndarray):
-        self.W = W
-        self.B = B
+    # def set_params(self, W: np.ndarray, b: np.ndarray):
+    #     self.W = W
+    #     self.b = b
 
-    def get_updated_params(self):
-        return self.dLdW, self.dLdB
+    # def get_updated_params(self):
+    #     return self.dLdW, self.dLdB
+
+    def initialize_params(self, initializer):
+        self.W = initializer.initialize_array([self.in_features, self.out_features])
+        self.b = initializer.initialize_array([self.out_features])
+
+    def get_params(self) -> list:
+        return [self.X. self.b]
+
+    def get_param_gradients(self) -> list:
+        return [self.dLdW, self.dLdB]
 
     def forward(self, X: np.ndarray) -> np.ndarray:
         """
@@ -111,7 +97,7 @@ class Dense(Layer):
             Note: all of these are matrices not vectors, because it consideres batch inputs
         """
         self.X = X
-        X2 = np.dot(X, self.W) + self.B
+        X2 = np.dot(X, self.W) + self.b
 
         return X2
 
