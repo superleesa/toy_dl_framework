@@ -2,12 +2,13 @@
 
 This repository implements a deep learning algorithms from scratch, using Numpy only. Some characteristics are: 
 
-1. Mix of PyTorch and Keras - can use fit API like Keras to quickly fit a model, or write a train loop from scratch in PyTorch style
-2. No computation graph - no need to care about tracking gradients and scopes; instead, create a layer by yourself without effort
-3. Simple, yet low-level - written only using pure Python and Numpy; you get a low-level understanding of deep learning architectures easily; it is suitable for learning purposes
+
+1. Simple, yet low-level - written only using pure Python and Numpy; you get a low-level understanding of deep learning architectures easily; it is suitable for learning purposes
+2. Mix of PyTorch and Keras - can use fit API like Keras to quickly fit a model, or write a train loop from scratch in PyTorch style
+3. No computation graph - no need to care about tracking gradients and scopes; instead, create a layer by yourself with both forward and backward methods
 
 ## Basic Usage
-An example for creating a two-layer MLP for MNIST data. Check two_layer_ml_mnist.py for the full code.
+An example for creating a two-layer MLP for MNIST data. Check [two_layer_ml_mnist.py](https://github.com/superleesa/toy_dl_framework/blob/main/examples/two_layer_mlp_mnist.py) for the full code.
 ```python
 
 X_train, y_train, X_test, y_test = get_normalized_data()
@@ -48,7 +49,7 @@ We plan to add more layers including:
 - Conv1D
 
 ## Notes on Architecture
-![img.png](framework_architecture.png)
+![img.png](imgs/framework_architecture.png)
 The framework consists of 6 main classes:
 1. Model
 2. Layer

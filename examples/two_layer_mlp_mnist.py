@@ -1,5 +1,5 @@
 from preprocessing import get_normalized_data
-from basic_layers import Softmax
+from layers import Softmax
 from model import Model
 from layers import Linear, ReLU
 from loss import SoftmaxThenCrossEntropy, CrossEntropy

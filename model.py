@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from basic_layers import Layer, Softmax
+from layers import Layer, Softmax
 import numpy as np
 
 from initializer import Initializer

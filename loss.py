@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-
-from basic_layers import Layer
 import numpy as np
 
 class Loss(ABC):
