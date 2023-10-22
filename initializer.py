@@ -9,8 +9,8 @@ class Initializer(ABC):
         ...
 
 class RandomInitializer(Initializer):
-    def initialize_array(self, shape: list) -> np.ndarray:
-        return np.random.random(shape)
+    def initialize_array(self, shape: list, std: int = 0.01) -> np.ndarray:
+        return std*np.random.randn(*shape)
 
 class ZerosInitializer(Initializer):
     def initialize_array(self, shape: list) -> np.ndarray:

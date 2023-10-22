@@ -6,6 +6,29 @@ This repository implements a deep learning algorithms from scratch, using Numpy 
 2. No computation graph - no need to care about tracking gradients and scopes; instead, create a layer by yourself without effort
 3. Simple, yet low-level - written only using pure Python and Numpy; you get a low-level understanding of deep learning architectures easily; it is suitable for learning purposes
 
+## Basic Usage
+An example for creating a two-layer MLP for MNIST data. Check two_layer_ml_mnist.py for the full code.
+```python
+
+X_train, y_train, X_test, y_test = get_normalized_data()
+
+layers = [
+    Linear(X_train.shape[1], 50),
+    ReLU(),
+    Linear(50, 10),
+    Softmax(),
+]
+
+cross_entropy = CrossEntropy()
+acc_metric = Accuracy()
+
+mlp = Model(layers)
+sgd = SGD(mlp.get_trainable_params(), 0.1)
+
+mlp.fit(X_train, y_train, cross_entropy, sgd, epochs=10, initializer=RandomInitializer())
+accuracy = mlp.evaluate(X_test, y_test, acc_metric)
+```
+
 ## Layers Implemented / To-Be Implemented
 Currently, we have the following layers:
 - Linear (Dense)

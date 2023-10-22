@@ -20,7 +20,7 @@ def import_data_as_df():
     df2 = pd.read_csv("mnist_test.csv")
     return df1, df2
 
-def process(df1, df2):
+def process(df1, df2, change_to_ohe=False):
     # separate the features and labels
     X_train = df1.loc[:,df1.columns != "label"]
     y_train = df1.loc[:, "label"]
@@ -33,11 +33,12 @@ def process(df1, df2):
     X_test = normalize_pixels(X_test).to_numpy()
 
     # change to one-hot encode
-    Y_train = change_to_one_hot_encode(y_train)
-    Y_test = change_to_one_hot_encode(y_test)
+    if change_to_ohe:
+        y_train = change_to_one_hot_encode(y_train)
+        y_test = change_to_one_hot_encode(y_test)
 
-    return X_train, Y_train, X_test, Y_test
+    return X_train, y_train, X_test, y_test
 
-def get_normalized_data():
+def get_normalized_data(change_to_ohe=False):
     df1, df2 = import_data_as_df()
-    return process(df1, df2)
+    return process(df1, df2, change_to_ohe=change_to_ohe)

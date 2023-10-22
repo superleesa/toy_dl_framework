@@ -2,7 +2,7 @@ import numpy as np
 from typing import Union, Optional
 from abc import ABC, abstractmethod
 
-from initializer import Initializer
+from initializer import Initializer, ZerosInitializer
 from parameter import Parameter
 
 
@@ -82,11 +82,14 @@ class Linear(Layer):
         self.W = Parameter()
         self.b = Parameter()
 
+        # bias initializer
+        self.bias_initializer = ZerosInitializer()
+
     def initialize_params(self, initializer):
         if self.initializer is not None:
             initializer = self.initializer
         self.W.value = initializer.initialize_array([self.in_features, self.out_features])
-        self.b.value = initializer.initialize_array([self.out_features])
+        self.b.value = self.bias_initializer.initialize_array([self.out_features])
 
     def get_params(self) -> list:
         return [self.W, self.b]
