@@ -8,7 +8,7 @@ This repository implements a deep learning algorithms from scratch, using Numpy 
 3. No computation graph - no need to care about tracking gradients and scopes; instead, create a layer by yourself with both forward and backward methods
 
 ## Basic Usage
-An example for creating a two-layer MLP for MNIST data. Check [two_layer_ml_mnist.py](https://github.com/superleesa/toy_dl_framework/blob/main/examples/two_layer_mlp_mnist.py) for the full code.
+An example of creating a two-layer MLP for MNIST data. Check [two_layer_ml_mnist.py](https://github.com/superleesa/toy_dl_framework/blob/main/examples/two_layer_mlp_mnist.py) for the full code.
 ```python
 
 X_train, y_train, X_test, y_test = get_normalized_data()
