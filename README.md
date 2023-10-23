@@ -4,8 +4,7 @@ This repository implements a deep learning algorithms from scratch, using Numpy 
 
 
 1. Simple, yet low-level - written only using pure Python and Numpy; you get a low-level understanding of deep learning architectures easily; it is suitable for learning purposes
-2. Mix of PyTorch and Keras - can use fit API like Keras to quickly fit a model, or write a train loop from scratch in PyTorch style
-3. No computation graph - no need to care about tracking gradients and scopes; instead, create a layer by yourself with both forward and backward methods
+2. Mix of PyTorch and Keras - can use fit API like Keras to quickly fit a model, or write a train loop from scratch in PyTorch style. The implementation itself is similar to Chainer.
 
 ## Basic Usage
 An example of creating a two-layer MLP for MNIST data. Check [two_layer_ml_mnist.py](https://github.com/superleesa/toy_dl_framework/blob/main/examples/two_layer_mlp_mnist.py) for the full code.
@@ -36,8 +35,8 @@ Currently, we have the following layers:
 - ReLU
 - SoftmaxWithCrossEntropy
 - Embedding
-- Conv2D
-- SimpleRNN
+- Conv2D (currently implementing)
+- SimpleRNN (currently implementing)
 
 Each of these layers is implemented as a class that has both forward and backward methods, enabling forward and backward propagations. We also implement several optimizers including SGD, Momentum, and Adam. Several initializers are also available.
 
