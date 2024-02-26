@@ -6,3 +6,6 @@ class Parameter:
         self.gradient = gradient
         self.name = name
 
+    def reset_grad_to_zeroes(self):
+        self.gradient = np.zeroes(self.gradient.shape)
+
