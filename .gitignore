@@ -1,2 +1,7 @@
+# don't commit data
 /mnist_train.csv
 /mnist_test.csv
+
+# remove unwanted caches
+.ipynb_checkpoints
+__pycache__
