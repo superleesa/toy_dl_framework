@@ -5,7 +5,6 @@ from abc import ABC, abstractmethod
 from initializer import Initializer, ZerosInitializer, NormalInitializer
 from parameter import Parameter
 
-
 class Layer(ABC):
 
     def __init__(self, initializer: Initializer = None):

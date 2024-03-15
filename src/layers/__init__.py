@@ -1,5 +1,6 @@
 import sys
-sys.path.append("C:\\Users\\super\\Documents\\4.Projects\\neural_network\\network_module\\layers")
+from pathlib import Path
+sys.path.append(str(Path(__file__).parents[0]))
 
 from basic_layers import *
 from vision_layers import *

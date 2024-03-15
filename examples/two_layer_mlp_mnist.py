@@ -3,7 +3,7 @@ from layers import Softmax
 from model import Model
 from layers import Linear, ReLU
 from loss import SoftmaxThenCrossEntropy, CrossEntropy
-from initializer import RandomInitializer
+from initializer import NormalInitializer
 from optimizer import SGD
 from metric import Accuracy
 
@@ -23,7 +23,7 @@ acc_metric = Accuracy()
 mlp = Model(layers)
 sgd = SGD(mlp.get_trainable_params(), 0.1)
 
-mlp.fit(X_train, y_train, cross_entropy, sgd, epochs=10, initializer=RandomInitializer())
+mlp.fit(X_train, y_train, cross_entropy, sgd, epochs=10, initializer=NormalInitializer())
 accuracy = mlp.evaluate(X_test, y_test, acc_metric)
 print(accuracy)  # 0.969
 

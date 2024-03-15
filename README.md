@@ -48,7 +48,7 @@ We plan to add more layers including:
 - Conv1D
 
 ## Notes on Architecture
-![img.png](imgs/framework_architecture.png)
+![img.png](github_imgs/framework_architecture.png)
 The framework consists of 6 main classes:
 1. Model
 2. Layer
