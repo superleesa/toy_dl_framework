@@ -133,16 +133,16 @@ class Embedding(Layer):
     def get_params(self) -> list:
         return [self.embedding]
 
-    def forward(self, token_ids: np.ndarray[str]) -> np.ndarray:
+    def forward(self, token_ids: np.ndarray) -> np.ndarray:
         # token_ids: should have size of (batch_size, max_seq_len)
         # gather
         self.passed_vocab_ids = token_ids
-        return self.embedding.value[token_ids]
+        return np.take(self.embedding.value, token_ids, axis=0)
 
     def backward(self, d_inpt: np.ndarray) -> np.ndarray:
         # d_inpt: should have size of (batch_size, max_seq_len, embed_size)
 
         self.embedding.reset_grad_to_zeroes()
-        self.embedding.gradient[self.passed_vocab_ids] += d_inpt
+        self.embedding.gradient[self.passed_vocab_ids.flatten()] += d_inpt.reshape(-1, self.embed_size)
 
         return self.embedding.gradient
