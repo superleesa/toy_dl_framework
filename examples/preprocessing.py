@@ -16,8 +16,8 @@ def change_to_one_hot_encode(y):
     return Y
 
 def import_data_as_df():
-    df1 = pd.read_csv("../data/mnist_train.csv")
-    df2 = pd.read_csv("../data/mnist_test.csv")
+    df1 = pd.read_csv("data/mnist_train.csv")
+    df2 = pd.read_csv("data/mnist_test.csv")
     return df1, df2
 
 def process(df1, df2, change_to_ohe=False):

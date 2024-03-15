@@ -22,12 +22,11 @@ class Model(ABC):
 
         # todo: support multiple initialization methods
 
-    def fit(self, X, Y, loss_func: Loss, optimizer: Optimizer, epochs: int = 3, initializer: Initializer = None, mini_batch_size: int = 64) -> None:
+    def fit(self, X, Y, loss_func: Loss, optimizer: Optimizer, epochs: int = 3, mini_batch_size: int = 64) -> None:
         """fit API similar to keras that automatically does everything, without writing a training loop"""
 
         # get input/output layer size
         self.epochs = epochs
-        self.initializer = initializer
         self.mini_batch_size = mini_batch_size
         self.optimizer = optimizer
         self.loss_func = loss_func
@@ -79,7 +78,7 @@ class Model(ABC):
 
     def _initialize_params(self):
         for layer in self.layers:
-            layer.initialize_params(self.initializer)
+            layer.initialize_params()
 
     def forward_then_loss(self, X, y) -> np.ndarray:
         """returns loss"""

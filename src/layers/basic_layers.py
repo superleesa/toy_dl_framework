@@ -6,10 +6,6 @@ from initializer import Initializer, ZerosInitializer, NormalInitializer
 from parameter import Parameter
 
 class Layer(ABC):
-
-    def __init__(self, initializer: Initializer = None):
-        self.initializer = initializer
-
     @abstractmethod
     def forward(self, X: np.ndarray) -> np.ndarray:
         ...
@@ -24,7 +20,7 @@ class Layer(ABC):
         """
         ...
 
-    def initialize_params(self, initializer: Initializer):
+    def initialize_params(self):
         """layers without parameters does nothing"""
         return
 
@@ -34,11 +30,10 @@ class Layer(ABC):
 
 class ReLU(Layer):
 
-    def __init__(self, initializer: Initializer = None) -> None:
-        super().__init__(initializer)
+    def __init__(self) -> None:
         self.is_activated = None
 
-    def forward(self, X: np.ndarray) -> None:
+    def forward(self, X: np.ndarray) -> np.ndarray:
         """
             X: should have size of batch_size*hidden_layer
         """
@@ -69,8 +64,8 @@ class Softmax(Layer):
 
 class Linear(Layer):
 
-    def __init__(self, in_features, out_features, initializer: Initializer = None):
-        super().__init__(initializer)
+    def __init__(self, in_features, out_features, weight_initializer: Initializer = None, bias_initializer: Initializer = None) -> None:
+        super().__init__()
         self.in_features = in_features
         self.out_features = out_features
 
@@ -82,12 +77,11 @@ class Linear(Layer):
         self.b = Parameter()
 
         # bias initializer
-        self.bias_initializer = ZerosInitializer()
+        self.weight_initializer = weight_initializer if weight_initializer is not None else NormalInitializer()
+        self.bias_initializer = bias_initializer if bias_initializer is not None else ZerosInitializer()
 
-    def initialize_params(self, initializer):
-        if self.initializer is not None:
-            initializer = self.initializer
-        self.W.value = initializer.initialize_array([self.in_features, self.out_features])
+    def initialize_params(self):
+        self.W.value = self.weight_initializer.initialize_array([self.in_features, self.out_features])
         self.b.value = self.bias_initializer.initialize_array([self.out_features])
 
     def get_params(self) -> list:
