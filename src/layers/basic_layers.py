@@ -116,28 +116,31 @@ class Linear(Layer):
 
 
 class Embedding(Layer):
-    def __init__(self, vocab_size: int, embed_dim: int, id_to_index: dict, initializer: Initializer = None) -> None:
-        super().__init__(initializer)
-        self.embedding = Parameter()
+    def __init__(self, vocab_size: int, embed_dim: int, embedding_initializer: Initializer = None) -> None:
+        super().__init__()
+
         self.vocab_size = vocab_size
         self.embed_size = embed_dim
-        self.id_to_index = id_to_index
+
+        self.embedding = Parameter()
+        self.embedding_initializer = embedding_initializer if embedding_initializer is not None else NormalInitializer()
+
         self.passed_vocab_ids = None
 
-    def initialize_params(self, initializer):
-        if self.initializer is not None:
-            initializer = self.initializer
-        self.embedding.value = initializer.initialize_array([self.vocab_size, self.embed_size])
+    def initialize_params(self):
+        self.embedding.value = self.embedding_initializer.initialize_array([self.vocab_size, self.embed_size])
 
     def get_params(self) -> list:
         return [self.embedding]
 
-    def forward(self, vocab_ids: np.ndarray[str]) -> np.ndarray:
+    def forward(self, token_ids: np.ndarray[str]) -> np.ndarray:
+        # token_ids: should have size of (batch_size, max_seq_len)
         # gather
-        self.passed_vocab_ids = vocab_ids
-        return self.embedding.value[vocab_ids]
+        self.passed_vocab_ids = token_ids
+        return self.embedding.value[token_ids]
 
     def backward(self, d_inpt: np.ndarray) -> np.ndarray:
+        # d_inpt: should have size of (batch_size, max_seq_len, embed_size)
 
         self.embedding.reset_grad_to_zeroes()
         self.embedding.gradient[self.passed_vocab_ids] += d_inpt
