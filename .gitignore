@@ -2,6 +2,9 @@
 /mnist_train.csv
 /mnist_test.csv
 
-# remove unwanted caches
+# unwanted caches
 .ipynb_checkpoints
 __pycache__
+
+# pycharm
+.idea

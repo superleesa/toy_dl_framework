@@ -9,4 +9,5 @@
 
 
 /mnist.train.csv
-/mnist.test.csv
+/mnist.test.csv# GitHub Copilot persisted chat sessions
+/copilot/chatSessions
